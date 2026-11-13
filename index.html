@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Quiz and written-answer practice for ISO 9001, IATF 16949 and measurement systems analysis.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Quality Standards Drill</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow working column under a controlled-document title block; setup, question and results swap in place. */
+:root{
+  --bg:#eef1f4; --panel:#ffffff; --ink:#15212d; --muted:#566575; --line:#c9d2db;
+  --accent:#0d5a86; --accent-ink:#ffffff; --accent-soft:#dcebf4;
+  --ok:#1c7a4c; --ok-soft:#dff2e7; --bad:#b3372b; --bad-soft:#f9e1de; --warn:#8a6200;
+  --display:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --panel:#18222c; --ink:#e6edf3; --muted:#9aaab9; --line:#2f3d4a;
+  --accent:#6bb6e0; --accent-ink:#0b1620; --accent-soft:#1c3444;
+  --ok:#5cc48d; --ok-soft:#173527; --bad:#f08b80; --bad-soft:#40201d; --warn:#e0b34a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --panel:#18222c; --ink:#e6edf3; --muted:#9aaab9; --line:#2f3d4a;
+  --accent:#6bb6e0; --accent-ink:#0b1620; --accent-soft:#1c3444;
+  --ok:#5cc48d; --ok-soft:#173527; --bad:#f08b80; --bad-soft:#40201d; --warn:#e0b34a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);
+  padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.mono{font-family:var(--mono);font-size:.8rem}
+.label{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* Title block, as on a controlled document */
+.tb{display:grid;grid-template-columns:1fr auto auto;border:1.5px solid var(--ink);background:var(--panel)}
+.tb>div{padding:8px 12px;border-left:1.5px solid var(--ink);display:flex;flex-direction:column;gap:2px;min-width:0}
+.tb>div:first-child{border-left:0}
+.tb h1{font-size:1.5rem;font-weight:700}
+.tb .v{font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.tb{grid-template-columns:1fr 1fr}.tb>div:first-child{grid-column:1/-1;border-bottom:1.5px solid var(--ink)}.tb>div:nth-child(2){border-left:0}}
+
+.panel{background:var(--panel);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.between{justify-content:space-between}
+
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;padding:10px 20px;font-family:var(--display);font-weight:600;font-size:1.05rem;letter-spacing:.02em}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.link{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;font-size:.85rem}
+
+/* Deck picker */
+.decks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (max-width:520px){.decks{grid-template-columns:1fr}}
+.deck{text-align:left;background:var(--panel);border:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
+.deck[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.deck h3{font-size:1.15rem;font-weight:600}
+.deck p{font-size:.85rem;color:var(--muted)}
+.meter{height:4px;background:var(--line)}
+.meter i{display:block;height:100%;background:var(--ok)}
+.seg{display:inline-flex;border:1px solid var(--line)}
+.seg button{background:var(--panel);border:0;border-left:1px solid var(--line);padding:6px 12px;font-size:.9rem}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.opt-group{display:flex;flex-direction:column;gap:6px}
+
+/* Question */
+.q{font-family:var(--display);font-size:1.4rem;font-weight:600}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{display:flex;gap:12px;text-align:left;background:var(--panel);border:1px solid var(--line);padding:12px}
+.choice .k{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding-top:2px}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{cursor:default}
+.choice.right{border-color:var(--ok);background:var(--ok-soft)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{border-top:1px dashed var(--line);padding-top:16px;display:flex;flex-direction:column;gap:8px}
+.verdict{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.verdict.ok{color:var(--ok)}.verdict.no{color:var(--bad)}
+.ref{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+textarea{width:100%;min-height:130px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:12px;resize:vertical}
+.model{background:var(--accent-soft);padding:12px;display:flex;flex-direction:column;gap:8px}
+.model ul{margin:0;padding-left:20px}
+
+/* Run strip: one mark per question, above or below the centre line */
+.run{display:flex;gap:3px;align-items:center;height:26px;border-block:1px solid var(--line);background:linear-gradient(var(--line),var(--line)) center/100% 1px no-repeat;padding-inline:4px;overflow:hidden}
+.run i{flex:1 1 0;max-width:14px;height:8px;background:var(--line);border-radius:50%}
+.run i.ok{background:var(--ok);transform:translateY(-6px)}
+.run i.no{background:var(--bad);transform:translateY(6px)}
+.run i.now{background:var(--accent)}
+
+.score{font-family:var(--display);font-size:3rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.missed{display:flex;flex-direction:column;gap:12px}
+.missed article{border-left:3px solid var(--bad);padding-left:12px;display:flex;flex-direction:column;gap:4px}
+.missed h3{font-size:1.05rem;font-weight:600}
+.note{font-size:.8rem;color:var(--muted)}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="tb">
+    <div><span class="label">Title</span><h1>Quality Standards Drill</h1></div>
+    <div><span class="label">Scope</span><span class="v">9001 · 16949 · MSA</span></div>
+    <div><span class="label">Mastered</span><span class="v" id="tbMastered">0 / 0</span></div>
+  </header>
+  <main id="app"></main>
+  <p class="note">Questions follow ISO 9001:2015, IATF 16949:2016 and the AIAG MSA reference manual, 4th edition. Clause numbers are for looking up the source text. Check them against the edition your organisation works to, and against current IATF Sanctioned Interpretations.</p>
+</div>
+
+<script>
+// Each item: [clause/ref, question, [correct, wrong, wrong, wrong], explanation]. Append only, ids depend on position.
+const MC = {
+iso: [
+["ISO 9001:2015, 7.5","ISO 9001:2015 says to “maintain” some documented information and “retain” other documented information. What is the difference?",["Maintain applies to documents that are kept current; retain applies to records kept as evidence","Maintain applies to electronic files; retain applies to paper files","Maintain is a recommendation; retain is a requirement","There is no difference; the terms are interchangeable"],"“Maintain” signals what older editions called documents or procedures. “Retain” signals records: evidence of results achieved. Writers use this cue to decide whether a clause calls for a procedure or a record."],
+["ISO 9001:2015, 0.1","In ISO 9001, which verb indicates a requirement?",["shall","should","may","can"],"“Shall” is a requirement, “should” a recommendation, “may” a permission, and “can” a possibility or capability."],
+["ISO 9001:2015, 4.4 and 7.5.1","Does ISO 9001:2015 require a quality manual?",["No. It requires documented information, but not a manual by that name","Yes, with six mandatory procedures","Yes, but only for organisations over 50 people","Only if the certification body asks for one"],"The 2015 edition dropped the explicit quality manual and the six mandatory documented procedures. IATF 16949 adds the manual back for automotive suppliers."],
+["ISO 9000:2015 / ISO 9001:2015, 0.2","Which of these is NOT one of the seven quality management principles?",["System approach to management","Engagement of people","Evidence-based decision making","Relationship management"],"The seven are customer focus, leadership, engagement of people, process approach, improvement, evidence-based decision making and relationship management. “System approach to management” was one of the eight principles in the 2008 era and was merged into the process approach."],
+["ISO 9001:2015, 6.1","Where did “preventive action” go in the 2015 edition?",["It was replaced by risk-based thinking and actions to address risks and opportunities","It moved unchanged to clause 10.3","It became a mandatory documented procedure in clause 8","It was merged into internal audit"],"There is no separate preventive action clause. The whole system is meant to act preventively, through clause 6.1 and risk-based thinking throughout."],
+["ISO 9001:2015, 4.1 and 4.2","Clause 4 asks the organisation to determine two things before defining the scope of its QMS. Which two?",["External and internal issues, and the relevant requirements of interested parties","The quality policy and the quality objectives","Customer complaints and supplier performance","The audit programme and management review inputs"],"Clause 4.1 covers the context of the organisation (external and internal issues). Clause 4.2 covers the needs and expectations of interested parties."],
+["ISO 9001:2015, 0.3.2","In the Plan-Do-Check-Act cycle, which clause is the “Check” step?",["Clause 9, Performance evaluation","Clause 6, Planning","Clause 8, Operation","Clause 10, Improvement"],"Plan covers clauses 4 to 7, Do is clause 8, Check is clause 9 and Act is clause 10, with leadership (clause 5) at the centre."],
+["ISO 9001:2015, 5.1 and 5.3","Is a designated “management representative” required?",["No. Top management stays accountable and assigns the responsibilities in 5.3","Yes, and the person must be a member of top management","Yes, and the person must be independent of production","Only for multi-site organisations"],"The 2015 edition removed the named management representative. Top management is accountable for the effectiveness of the QMS and assigns responsibility and authority for the listed tasks."],
+["ISO 9001:2015, 8.4","Which clause title replaced “Purchasing”?",["Control of externally provided processes, products and services","Supplier relationship management","Procurement and outsourcing","Control of external documents"],"Clause 8.4 covers suppliers, outsourced processes and anything else provided from outside, under one set of requirements."],
+["ISO 9000:2015, 3.12","An operator finds 40 undersized parts and scraps them. In ISO terms, scrapping the parts is a:",["Correction","Corrective action","Preventive action","Concession"],"A correction eliminates a detected nonconformity. A corrective action eliminates the cause so it does not recur. Mixing the two up is one of the most common errors in quality writing."],
+["ISO 9001:2015, 4.3","When can a requirement of ISO 9001 be treated as not applicable?",["Only if it does not affect the ability to ensure conformity of products and services, with justification documented","Whenever top management approves it","Only for requirements in clause 7","Never; every requirement applies to every organisation"],"The word “exclusion” is no longer used. A requirement can be determined as not applicable within the scope, with justification, and only where conformity and customer satisfaction are not affected."],
+["ISO 9001:2015, 6.2.1","Which property is required of quality objectives?",["They are measurable and consistent with the quality policy","They are identical across all departments","They are reviewed by the customer","They are expressed as financial targets"],"Objectives also have to be relevant to conformity, monitored, communicated and updated, and kept as documented information."],
+["ISO 9001:2015, 9.3.2","Which of these is a required input to management review?",["The status of actions from previous management reviews","Individual employee appraisals","The certification body’s invoice","Competitor price lists"],"Other inputs include changes in external and internal issues, customer satisfaction, audit results, performance of external providers, adequacy of resources and the effectiveness of actions on risks and opportunities."],
+["ISO 9001:2015, 7.1.5.2","When measurement traceability is a requirement, measuring equipment must be:",["Calibrated or verified at specified intervals against standards traceable to international or national standards","Replaced every 12 months","Calibrated only by the original manufacturer","Checked by two operators before each shift"],"It must also be identified so its status can be determined, and protected from adjustment, damage or deterioration."],
+["ISO 9001:2015, 7.1.6","Which clause was new in 2015 and requires the organisation to determine and maintain the knowledge needed to operate its processes?",["7.1.6 Organizational knowledge","7.3 Awareness","7.4 Communication","8.1 Operational planning and control"],"Organisational knowledge covers lessons learned, expert know-how and other knowledge specific to the organisation."],
+["ISO 9001:2015, 8.7","Which clause covers outputs that do not conform to requirements?",["8.7 Control of nonconforming outputs","8.6 Release of products and services","10.3 Continual improvement","9.1 Monitoring, measurement, analysis and evaluation"],"Clause 8.7 allows correction, segregation or containment, informing the customer, or acceptance under concession. Clause 10.2 then handles the corrective action."],
+["ISO 9001:2015, 9.2","What does clause 9.2 require of internal audits?",["They are conducted at planned intervals, with auditors selected to ensure objectivity and impartiality","They are conducted monthly by the quality manager","They are conducted by an accredited third party","They cover only the production processes"],"The programme must consider the importance of the processes, changes affecting the organisation and the results of previous audits."],
+["ISO 9001:2015, 7.2 and 7.3","What is the difference between competence (7.2) and awareness (7.3)?",["Competence is the ability to do the work; awareness is knowing the policy, objectives and the effect of one’s own contribution","Competence applies to managers; awareness applies to operators","Competence is recorded; awareness is audited","They are two names for the training requirement"],"Competence is based on education, training or experience, with evidence retained. Awareness covers the policy, relevant objectives, each person’s contribution and the implications of not conforming."],
+["ISO 9001:2015, 8.5.2","When traceability is a requirement, the organisation must:",["Control the unique identification of outputs and retain the documented information needed","Serialise every component","Photograph each shipment","Keep samples of each lot for ten years"],"Clause 8.5.2 also requires identifying the status of outputs with respect to monitoring and measurement requirements."],
+["ISO 9001:2015, clauses 4 to 10","Which clauses contain the auditable requirements?",["Clauses 4 to 10","Clauses 1 to 10","Clauses 0 to 3","Clauses 5 to 8 only"],"Clauses 1 to 3 are scope, normative references, and terms and definitions. Requirements begin at clause 4."]
+],
+iatf: [
+["IATF 16949:2016, Foreword and 1.1","How does IATF 16949 relate to ISO 9001?",["It is a supplement used together with ISO 9001:2015, not a stand-alone standard","It replaces ISO 9001 for automotive suppliers","It is an annex inside ISO 9001","It is a guidance document with no requirements"],"IATF 16949 does not reproduce the ISO 9001 text. A certified site has to meet ISO 9001:2015, IATF 16949:2016 and the applicable customer-specific requirements."],
+["IATF 16949:2016, Foreword","Which document did IATF 16949:2016 replace?",["ISO/TS 16949:2009","QS-9000:1998","VDA 6.3","ISO 9004:2009"],"It was published in October 2016 by the International Automotive Task Force and replaced ISO/TS 16949:2009."],
+["IATF 16949:2016, 7.5.1.1","Does IATF 16949 require a quality manual?",["Yes, including the scope, the processes and their interactions, and a matrix showing where customer-specific requirements are addressed","No, it follows ISO 9001:2015 on this point","Only for design-responsible sites","Only if the customer requests it"],"The manual can be a single document or a set of documents. The customer-specific requirements matrix is a frequent audit target."],
+["AIAG core tools","Which set lists the five automotive core tools?",["APQP, PPAP, FMEA, MSA, SPC","APQP, PPAP, 8D, 5S, SPC","FMEA, MSA, DOE, SPC, TPM","PPAP, FMEA, Kaizen, MSA, CSR"],"Advanced Product Quality Planning, Production Part Approval Process, Failure Mode and Effects Analysis, Measurement Systems Analysis and Statistical Process Control."],
+["IATF 16949:2016, 6.1.2.3","Clause 6.1.2.3 requires contingency plans. What must the organisation do with them?",["Test them periodically for effectiveness and review them at least annually with a multidisciplinary team","File them with the certification body","Have each customer approve them before production starts","Rewrite them after every management review"],"Plans cover events such as key equipment failure, utility interruption, labour shortage, supply disruption and cyber-attack."],
+["IATF 16949:2016, 8.5.1.1","For which phases does IATF 16949 require a control plan?",["Pre-launch and production","Production only","Design, pre-launch and service","Prototype only"],"Control plans are required at system, subsystem, component or material level, linked to the design risk analysis, process flow diagram and PFMEA. Annex A lists the minimum content."],
+["IATF 16949:2016, 9.2.2","Which three types of internal audit does IATF 16949 require?",["QMS audit, manufacturing process audit and product audit","System audit, supplier audit and customer audit","First-party, second-party and third-party audit","Layered audit, dock audit and safety audit"],"Clauses 9.2.2.2, 9.2.2.3 and 9.2.2.4. Layered process audits come from customer-specific requirements, not from IATF 16949 itself."],
+["IATF 16949:2016, 9.2.2.3","Over what period must every manufacturing process be audited, and what must the audits cover?",["Each three-year calendar period, covering all shifts, with sampling of shift handover","Each calendar year, covering the day shift","Each six months, covering new processes only","Each certification cycle, covering one shift chosen at random"],"The same three-year rule applies to QMS processes under 9.2.2.2, using the process approach."],
+["IATF 16949:2016, 8.3.3.3","What does clause 8.3.3.3 on special characteristics require?",["Identifying them through a multidisciplinary approach and marking them in drawings, risk analyses, control plans and work instructions","Measuring them on 100% of parts","Reporting them to the certification body","Limiting them to five per part number"],"Special characteristics come from the customer and from the organisation’s own risk analysis. The symbols must be consistent, or mapped by a conversion table, across all the documents."],
+["IATF 16949:2016, 8.4.2.3","What is the minimum QMS status expected of suppliers of automotive products and services, unless the customer authorises otherwise?",["Certification to ISO 9001, with the ultimate objective of certification to IATF 16949","Certification to IATF 16949 from the first shipment","A self-declaration of conformity to ISO 9001","Certification to ISO 14001"],"Clause 8.4.2.3 sets out a development sequence that starts from ISO 9001 certification and aims at IATF 16949."],
+["IATF 16949:2016, 4.3.1","Which requirement is the only one a site may exclude from its IATF 16949 scope?",["Product design and development, when the organisation is not design-responsible","Manufacturing process design","Internal audit","Control of monitoring and measuring resources"],"The exclusion is limited to product design in clause 8.3 and must be justified. Manufacturing process design can never be excluded."],
+["IATF 16949:2016, 7.1.5.1.1","What does clause 7.1.5.1.1 require?",["Statistical studies of the variation in each type of inspection, measurement and test equipment system identified in the control plan","Calibration of every gauge by an accredited laboratory","A gauge R&R study on every gauge in the plant each year","A capability study on every special characteristic"],"The methods and acceptance criteria must conform to the reference manuals, such as AIAG MSA. Other methods are allowed with customer approval. Note that it is per type of system in the control plan."],
+["IATF 16949:2016, 7.1.5.3.2","What must an external laboratory used for inspection, test or calibration normally hold?",["Accreditation to ISO/IEC 17025 or a national equivalent, with the relevant service in its scope","Certification to IATF 16949","Certification to ISO 9001","Approval from the organisation’s purchasing department"],"Alternatives are limited: evidence that the lab is acceptable to the customer, or use of the equipment manufacturer when no accredited lab is available."],
+["AIAG PPAP, 4th edition","What is the default PPAP submission level when the customer does not specify one?",["Level 3","Level 1","Level 2","Level 5"],"Level 3 is the warrant with product samples and complete supporting data submitted to the customer. Level 1 is the warrant only."],
+["IATF 16949:2016, 7.5.3.2.1","Unless the customer or a regulation says otherwise, how long are PPAP records, tooling records and design records retained?",["For as long as the part is active for production and service, plus one calendar year","Three years from the date of creation","Ten years from the date of creation","Until the next recertification audit"],"Clause 7.5.3.2.1 requires a documented record retention policy that meets statutory, regulatory, organisational and customer requirements."],
+["IATF 16949:2016, 3.1","What is a customer-specific requirement (CSR)?",["An interpretation of, or supplement to, a specific clause of IATF 16949, set by the customer","Any dimension on a customer drawing","A requirement in the purchase order about price","A regulatory requirement of the destination country"],"Drawing dimensions and contract terms are customer requirements. CSRs are linked to clauses of the standard, and OEMs publish them."],
+["IATF 16949:2016, 10.2.4","What does clause 10.2.4 require for error-proofing?",["A documented process, with devices tested for failure or simulated failure, records kept and reaction plans defined","Error-proofing on every manufacturing operation","Approval of each device by the customer","Replacement of all visual inspection with sensors"],"The method details go in the process risk analysis and the test frequencies in the control plan. Challenge parts must be identified, controlled and calibrated where feasible."],
+["IATF 16949:2016, 4.4.1.2","Clause 4.4.1.2 requires documented processes for which topic?",["Product safety","Cost reduction","Environmental aspects","Employee suggestion schemes"],"It covers identification of statutory and regulatory product-safety requirements, special approvals, escalation, training and traceability across the supply chain."],
+["IATF 16949:2016, 8.5.1.5","Which maintenance approach does IATF 16949 require as a documented system?",["Total productive maintenance","Run-to-failure maintenance","Maintenance on customer request","Outsourced maintenance only"],"The TPM system includes maintenance objectives such as OEE, MTBF and MTTR, plus preventive and predictive methods, and feeds management review."],
+["IATF 16949:2016, 8.5.6.1.1","A gauge fails and the line switches to a backup inspection method. Which requirement applies?",["Temporary change of process controls","Control of reworked product","Contingency planning","Customer-designated sources"],"The organisation keeps a list of approved backup methods, reviews their use daily, and verifies the primary control before returning to it."],
+["IATF 16949:2016, 1.1 and 4.3","Which sites can be certified to IATF 16949?",["Sites that manufacture customer-specified production parts, service parts or accessory parts","Any site that sells into the automotive aftermarket","Design offices and sales offices on their own","Distributors and warehouses"],"Support functions such as design centres and headquarters are included in the scope of the site they support but cannot hold stand-alone certification."],
+["IATF 16949:2016, 10.2.3","What must the documented problem-solving process include?",["Defined approaches for different problem types, containment, root cause analysis, systemic corrective action and review of FMEA and control plan","A fixed 8D form for every nonconformity","Customer sign-off on each root cause","A cost estimate for each corrective action"],"Where the customer prescribes a process, tools or system, the organisation uses those unless the customer approves otherwise."]
+],
+msa: [
+["AIAG MSA-4, Ch. I","What is repeatability?",["Variation when one appraiser measures the same characteristic on the same part several times with the same gauge","Variation between the averages of different appraisers","The difference between the measured average and the reference value","The change in bias over time"],"Repeatability is usually called equipment variation (EV). It is within-system variation under fixed conditions."],
+["AIAG MSA-4, Ch. I","What is reproducibility?",["Variation in the average of measurements made by different appraisers using the same gauge on the same parts","Variation within one appraiser’s repeated readings","Variation between parts","Variation of the gauge across its operating range"],"Reproducibility is usually called appraiser variation (AV). It is between-system or between-condition variation."],
+["AIAG MSA-4, Ch. II","Under the AIAG guideline, how is a %GRR of 18% judged?",["It may be acceptable, depending on the importance of the application, the cost of the gauge and the cost of repair","It is acceptable","It is unacceptable","It cannot be judged without the bias"],"Under 10% is generally acceptable. From 10% to 30% may be acceptable for some applications. Over 30% is unacceptable. The middle band always needs a written justification."],
+["AIAG MSA-4, Ch. III","What is the minimum number of distinct categories (ndc) for a measurement system to be considered adequate?",["5","2","3","10"],"ndc = 1.41 × (PV ÷ GRR), truncated to a whole number. It tells you how many groups the system can reliably distinguish within the process variation."],
+["AIAG MSA-4, Ch. I","What is bias?",["The difference between the observed average of measurements and the reference value","The spread of repeated measurements","The smallest readable unit of the gauge","The difference between two appraisers’ averages"],"Bias is a location error. It is what people usually mean by accuracy."],
+["AIAG MSA-4, Ch. I","What is linearity?",["The change in bias over the normal operating range of the gauge","The change in bias over time","The straightness of the gauge’s scale markings","The agreement between two gauges of the same type"],"A linearity study measures bias at several reference values across the range and checks whether it stays constant."],
+["AIAG MSA-4, Ch. I and III","What is stability, and which tool assesses it?",["The change in bias over time, assessed with a control chart of a master or reference part","The change in bias across the range, assessed with a regression line","The variation between appraisers, assessed with ANOVA","The resolution of the gauge, assessed with a histogram"],"Stability is also called drift. A stable measurement system shows only common-cause variation on the control chart."],
+["AIAG MSA-4, Ch. III","What is the typical layout of a variable gauge R&R study by the average and range method?",["10 parts, 3 appraisers, 2 or 3 trials","5 parts, 2 appraisers, 1 trial","30 parts, 1 appraiser, 1 trial","50 parts, 3 appraisers, 3 trials"],"Fifty parts with three appraisers and three trials is the typical attribute study layout, not the variable one."],
+["AIAG MSA-4, Ch. II and III","When %GRR is calculated against total process variation, how should the study parts be chosen?",["To represent the full range of actual process variation","From one production lot, as close to nominal as possible","From parts that have already been rejected","At random from the reference standards"],"If the parts are too alike, part variation is understated and %GRR looks worse than it is. If they are artificially spread, it looks better."],
+["AIAG MSA-4, Ch. III","In an attribute agreement study, which kappa value indicates good agreement?",["Greater than 0.75","Greater than 0.40","Greater than 0.50","Exactly 1.00 only"],"Kappa above 0.75 indicates good to excellent agreement. Below 0.40 indicates poor agreement. Kappa measures agreement beyond chance."],
+["AIAG MSA-4, Ch. I","Which statement about accuracy and precision is correct?",["Accuracy is about location (bias); precision is about spread (repeatability and reproducibility)","Accuracy is about spread; precision is about location","They are synonyms in MSA","Accuracy applies to attribute gauges; precision to variable gauges"],"MSA separates location variation (bias, linearity, stability) from width variation (repeatability, reproducibility)."],
+["AIAG MSA-4, Ch. I","What does the 10-to-1 rule of thumb say about gauge discrimination?",["The gauge should resolve at least one-tenth of the process variation, or traditionally one-tenth of the tolerance","The gauge should be calibrated ten times a year","Ten parts should be measured by one appraiser","The gauge should cost no more than one-tenth of the part"],"Poor discrimination shows up on a range chart as only a few possible values, many of them zero."],
+["AIAG MSA-4, Ch. III","What can the ANOVA method show that the average and range method cannot?",["The interaction between appraiser and part","The repeatability of the gauge","The part-to-part variation","The total variation"],"ANOVA separates variation into parts, appraisers, appraiser-by-part interaction and equipment. It is the preferred method when software is available."],
+["AIAG MSA-4, Ch. III","A study gives EV = 3 and AV = 4 (same units). What is GRR?",["5","7","3.5","12"],"Variances add, standard deviations do not. GRR = √(EV² + AV²) = √(9 + 16) = 5."],
+["AIAG MSA-4, Ch. III","With GRR = 5 and PV = 12, what is %GRR of total variation, and how is it judged?",["About 38%, unacceptable","About 42%, unacceptable","About 29%, may be acceptable","About 17%, may be acceptable"],"TV = √(GRR² + PV²) = √(25 + 144) = 13. %GRR = 5 ÷ 13 = 38.5%, which is over 30%. Dividing 5 by 12 is the common mistake."],
+["AIAG MSA-4, Ch. I","A gauge has a valid calibration sticker. What does that tell you about the measurement system?",["Little about repeatability and reproducibility in use; calibration checks the instrument against a standard under controlled conditions","That the gauge R&R is under 10%","That no MSA study is needed","That the appraisers are competent"],"The measurement system includes the gauge, appraisers, method, fixture, part and environment. Calibration covers only part of that."],
+["AIAG MSA-4, Ch. IV","Which study design suits a destructive test, where a part cannot be measured twice?",["A nested design using batches of parts assumed to be homogeneous","A standard crossed design with fewer trials","An attribute agreement study","A linearity study"],"Each appraiser tests different samples from the same homogeneous batch. The assumption of homogeneity has to be stated and defended."],
+["AIAG MSA-4, Ch. II","Which basis for %GRR matters most when the gauge is used for process control rather than for product acceptance?",["Percent of total process variation","Percent of tolerance","Percent of the gauge’s range","Percent of the nominal dimension"],"For process control, the gauge must detect process variation. For acceptance or sorting, percent of tolerance is the relevant basis. A report must state which was used."],
+["AIAG MSA-4, Ch. III","How should measurements be collected in a gauge R&R study?",["In random order, with appraisers unaware of which numbered part they are measuring","In part-number order, to save time","With appraisers comparing readings after each part","With the best appraiser measuring first to set the reference"],"Blind, randomised measurement stops appraisers remembering or matching earlier readings."],
+["AIAG MSA-4, Ch. III","For an attribute gauge, which results would an appraiser need for the system to be acceptable?",["Effectiveness of at least 90%, miss rate of 2% or less, false alarm rate of 5% or less","Effectiveness of at least 80%, miss rate of 10% or less, false alarm rate of 10% or less","Effectiveness of at least 75%, with no limit on miss rate","Effectiveness of exactly 100%"],"The miss rate (accepting a bad part) is held tighter than the false alarm rate (rejecting a good part) because the customer bears the risk."]
+],
+write: [
+["ISO 9001:2015, 0.1","Which sentence correctly states a mandatory step in a procedure?",["The operator shall record the torque value on form F-112.","The operator should record the torque value on form F-112.","The torque value may be recorded on form F-112.","It is good practice to record the torque value."],"Use “shall” for requirements and keep “should” for recommendations. An auditor reads “should” as optional."],
+["ISO 19011 practice / IATF Rules","Which three elements make a complete nonconformity statement?",["The requirement, the objective evidence and the statement of nonconformity","The auditor’s name, the date and the department","The root cause, the corrective action and the due date","The clause number, the severity and the cost"],"State what failed, cite the requirement, and give evidence that someone else could go and verify. Root cause belongs to the response, not to the finding."],
+["ISO 9001:2015, 7.5","You are writing about a completed calibration results sheet. Which phrasing matches the standard?",["The laboratory retains the calibration results as documented information.","The laboratory maintains the calibration results as a procedure.","The calibration results are a controlled document that is revised after each use.","The laboratory documents the calibration results manual."],"A completed sheet is a record, so it is retained. The blank form and the calibration procedure are maintained."],
+["ISO 9000:2015, 3.12","A corrective action report says: “Corrective action: sorted 2,400 parts and retrained the operator.” What is wrong with it?",["Sorting is a correction, and neither item shows that a root cause was eliminated","Nothing; both items are corrective actions","Sorting should be listed as preventive action","Retraining may not be mentioned in a report"],"Corrective action eliminates the cause of the nonconformity. Sorting is containment, and retraining fixes a cause only if lack of training was shown to be the cause."],
+["ISO/IEC 17000 terminology","Which sentence uses the terms correctly?",["The plant is certified to IATF 16949 and its calibration laboratory is accredited to ISO/IEC 17025.","The plant is accredited to IATF 16949 and its laboratory is certified to ISO/IEC 17025.","The plant is ISO certified by ISO.","The plant’s products are IATF 16949 certified."],"Management systems are certified. Laboratories and certification bodies are accredited. ISO does not certify anyone, and the certificate covers the management system, not the product."],
+["AIAG MSA-4, Ch. II","Which sentence reports a gauge R&R result well enough for a reader to judge it?",["%GRR was 8.4% of tolerance with ndc = 14, from 10 parts, 3 appraisers and 3 trials (ANOVA).","The gauge passed R&R.","GRR was 8.4.","The gauge is accurate to 8.4%."],"A result needs its basis (tolerance or total variation), ndc, the study layout and the method. GRR measures precision, so “accurate” is the wrong word."],
+["Citation practice","Which is the clearest way to cite a requirement?",["IATF 16949:2016, 8.5.1.1","IATF section 8","The automotive standard, control plan part","ISO/TS 16949 8.5.1.1"],"Give the standard, the edition year and the full clause number so the reader can find the exact text. ISO/TS 16949 was withdrawn."],
+["ISO 9000:2015, 3.4.1 and 3.4.5","What is the difference between a process and a procedure?",["A process is a set of activities that turns inputs into an intended result; a procedure is a specified way to carry out an activity or process","A process is written down; a procedure is verbal","A process belongs to production; a procedure belongs to quality","They mean the same thing"],"A process exists whether or not it is written down. A procedure may or may not be documented."],
+["ISO 9001:2015, 7.5.2","What must be ensured when creating or updating documented information?",["Identification and description, an appropriate format and media, and review and approval for suitability","A wet-ink signature on every page","Translation into the customer’s language","A revision at least once a year"],"Identification typically means a title, date, author or reference number. This is why controlled documents carry a title block with a number and revision."],
+["Work instruction practice","Which step is best written for a work instruction?",["Tighten the four M8 bolts to 25 N·m in a cross pattern.","The bolts should be properly tightened as appropriate.","Bolts are to be tightened by the operator in the correct way.","Ensure adequate torque is applied."],"Use the imperative, one action per step, with the quantity, the unit and the method. Words like “properly” and “adequate” cannot be verified."],
+["ISO 9000:2015, 3.8.3","What is objective evidence?",["Data supporting the existence or verity of something, obtained by observation, measurement, test or other means","The auditor’s opinion of how a process is run","A statement from the process owner","Any document carrying an approval signature"],"In a finding, cite record numbers, dates, part numbers and observed values so the evidence can be verified."],
+["IATF 16949:2016, 8.5.1.1 and Annex A","A process flow diagram, a PFMEA and a control plan describe the same line. What should a writer check across the three?",["That operation numbers, characteristics and special-characteristic symbols match","That each document has the same number of pages","That each document has a different author","That the control plan lists every failure mode in the PFMEA"],"The three documents are linked. A mismatch in operation numbering or special characteristics between them is a common audit finding."],
+["Style: follow the source","A document cites the AIAG MSA manual. Which term matches that source?",["Gage repeatability and reproducibility (GRR)","Gauge reliability and reproducibility","Gage repeatability and reliability","Gauge accuracy and reproducibility"],"The second R is reproducibility, never reliability. AIAG spells it “gage”. In British-style documents “gauge” is fine, as long as the spelling is consistent."],
+["ISO 9001:2015, 7.1.5.2","A report says “All gauges were calibrated.” Which revision is more defensible?",["All 14 gauges listed in the control plan had valid calibration status, traceable to national standards, on the audit date.","All gauges were calibrated perfectly.","Gauges are always calibrated.","Calibration was fine."],"State the population, the criterion and the date. Specific, bounded statements can be verified. Absolutes cannot."],
+["ISO 9001:2015, 6.1 and 10.2","In ISO 9001:2015 terms, which phrase should replace “preventive action” in a new procedure?",["Actions to address risks and opportunities","Pre-emptive corrective action","Proactive correction","Advance containment"],"Using the current term shows the writer knows the 2015 structure. IATF 16949 still uses “preventive action” in clause 6.1.2.2, so check which standard the document answers to."]
+]};
+
+// Written prompts: [ref, prompt, model answer, key points]
+const WR = {
+iso:[
+["ISO 9000:2015, 3.12","In two or three sentences, explain the difference between a correction and a corrective action. Give one example of each.","A correction eliminates a detected nonconformity, for example reworking or scrapping the affected parts. A corrective action eliminates the cause of the nonconformity so that it does not recur, for example changing the fixture design that allowed the part to be loaded backwards.",["Correction acts on the nonconformity itself","Corrective action acts on the cause, to prevent recurrence","One concrete example of each"]],
+["ISO 9001:2015, 7.5","Explain to a new colleague what “documented information” means and how to tell whether a clause is asking for a document or a record.","Documented information is information the organisation has to control and maintain, in any format or media. Where the standard says to maintain it, the clause is asking for something kept current, such as a procedure. Where it says to retain it, the clause is asking for evidence of results, which is a record.",["Covers both documents and records, in any media","Maintain means kept current","Retain means kept as evidence"]],
+["ISO 9001:2015, 6.1","Describe risk-based thinking in ISO 9001:2015 and say what it replaced.","Risk-based thinking means considering risks and opportunities when planning the QMS and its processes, so that the system acts preventively. Clause 6.1 requires the organisation to determine risks and opportunities and plan actions in proportion to their potential effect. It replaced the separate preventive action clause of the 2008 edition. A formal risk management method is not required.",["Risks and opportunities considered in planning","Clause 6.1","Replaced the preventive action clause","No formal method required"]]
+],
+iatf:[
+["IATF 16949:2016, 8.5.1.1","Describe what a control plan is and name the documents it must link to.","A control plan is a documented description of the systems and controls used to keep a product and its manufacturing process within requirements. It is required for pre-launch and production and lists the characteristics, methods, sample sizes, frequencies and reaction plans for each operation. It links to the process flow diagram and the PFMEA, and takes input from the design risk analysis.",["Describes the controls for product and process","Pre-launch and production","Lists methods, frequency and reaction plan","Links to process flow and PFMEA"]],
+["IATF 16949:2016, 3.1 and 7.5.1.1","Explain what customer-specific requirements are and how a site shows it has addressed them.","Customer-specific requirements are interpretations of or supplements to specific clauses of IATF 16949 that a customer sets. The site must include them in the scope of its QMS. The quality manual must contain a document, such as a matrix, that shows where each one is addressed in the system.",["Linked to clauses of the standard","Set by the customer","Shown through a matrix or equivalent in the quality manual"]],
+["IATF 16949:2016, 9.2.2","Outline the three internal audit types in IATF 16949 and what each one examines.","The QMS audit checks all QMS processes against the standard over a three-year period using the process approach. The manufacturing process audit checks each manufacturing process for effectiveness and efficiency over three years, across all shifts including handover. The product audit checks the product itself against specified requirements at appropriate stages of production and delivery.",["QMS audit: system processes, three-year cycle","Manufacturing process audit: all shifts","Product audit: product against requirements"]]
+],
+msa:[
+["AIAG MSA-4, Ch. I","Explain repeatability and reproducibility to a reader who has never run a gauge study.","Repeatability is the variation seen when one person measures the same part several times with the same gauge. It reflects the equipment. Reproducibility is the variation between the averages of different people measuring the same parts with the same gauge. It reflects the appraisers and the method. Together they form the gauge R&R, which is the part of observed variation that comes from the measurement system and not from the parts.",["Repeatability: same appraiser, same part, same gauge","Reproducibility: between appraisers","Combined as GRR, the measurement system’s share of variation"]],
+["AIAG MSA-4, Ch. II","Write a short paragraph interpreting this result: %GRR = 22% of total variation, ndc = 6.","The measurement system accounts for 22% of total variation, which falls in the 10% to 30% band. It may be acceptable depending on the importance of the characteristic and the cost of improving the gauge, and the decision needs a documented justification. The ndc of 6 meets the minimum of 5, so the system can distinguish enough categories for process control. The next step is to look at whether repeatability or reproducibility dominates and decide whether improvement is worth it.",["Names the 10% to 30% conditional band","Requires justification, not a plain pass","ndc of 6 meets the minimum of 5","Suggests looking at EV against AV"]],
+["AIAG MSA-4, Ch. I","Explain why a calibrated gauge can still give an unacceptable gauge R&R.","Calibration compares the instrument with a traceable standard under controlled conditions, so it addresses bias at the points checked. Gauge R&R measures variation in actual use, which also depends on the appraisers, the method, the fixture, the part and the environment. A gauge can read a master correctly and still vary too much when different people use it on production parts.",["Calibration addresses bias against a standard","GRR covers the whole measurement system in use","Appraisers, method, fixture and environment contribute"]]
+],
+write:[
+["ISO 19011 practice","Write a nonconformity statement for this situation: during an audit you find that torque wrench TW-07 at station 4 has a calibration label that expired three months ago and is in use.","Statement: Monitoring and measuring equipment in use was not calibrated at the specified interval. Requirement: ISO 9001:2015, 7.1.5.2 requires measuring equipment to be calibrated or verified at specified intervals when traceability is a requirement. Evidence: Torque wrench TW-07 at station 4 was in use on the audit date with a calibration label showing a due date three months earlier, and no extension record was available.",["States what failed","Cites the requirement with clause","Gives verifiable evidence: equipment ID, location, dates","Does not guess at a root cause"]],
+["Work instruction practice","Rewrite this as a usable work instruction step: “Parts should be checked properly before they go to the next operation.”","Measure the bore diameter of one part in every 10 with plug gauge PG-22. If the gauge does not enter, stop the operation, tag the last 10 parts as suspect and call the team leader.",["Imperative verb","Names the characteristic and the gauge","States the frequency","Gives the reaction when the check fails"]]
+]};
+
+const TOPICS = [
+  ["iso","ISO 9001","Structure, terms and core requirements of the 2015 edition"],
+  ["iatf","IATF 16949","Automotive supplements, core tools and audit rules"],
+  ["msa","MSA","Gauge R&R, bias, linearity, stability and attribute studies"],
+  ["write","Writing to the standard","Requirement verbs, findings, citations and reporting results"]
+];
+
+const KEY="qsd-v1";
+let prog={}; try{prog=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(prog))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const app=document.getElementById("app");
+
+const cfg={topics:new Set(["iso","iatf","msa","write"]),mode:"mc",len:10,focus:"all"};
+let S=null, confirmReset=false;
+
+const bank=mode=>mode==="mc"?MC:WR;
+const idOf=(mode,t,i)=>mode+":"+t+":"+i;
+function stats(t){ // mastered = last attempt correct, multiple choice only
+  const n=MC[t].length; let m=0;
+  for(let i=0;i<n;i++) if(prog[idOf("mc",t,i)]===1) m++;
+  return [m,n];
+}
+function pool(){
+  const out=[];
+  for(const t of cfg.topics)(bank(cfg.mode)[t]||[]).forEach((q,i)=>{
+    const id=idOf(cfg.mode,t,i);
+    if(cfg.focus==="all"||prog[id]!==1) out.push({id,t,q});
+  });
+  return out;
+}
+function header(){
+  let m=0,n=0; TOPICS.forEach(([t])=>{const s=stats(t);m+=s[0];n+=s[1]});
+  document.getElementById("tbMastered").textContent=m+" / "+n;
+}
+const seg=(name,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-set="${name}" data-v="${v}" aria-pressed="${String(cfg[name])===String(v)}">${l}</button>`).join("")}</div>`;
+
+function setup(){
+  S=null; header();
+  const n=pool().length, take=cfg.len==="all"?n:Math.min(cfg.len,n);
+  app.innerHTML=`<section class="panel">
+    <div class="opt-group"><span class="label">Decks</span>
+    <div class="decks">${TOPICS.map(([t,name,desc])=>{const[m,c]=stats(t);return `<button type="button" class="deck" data-topic="${t}" aria-pressed="${cfg.topics.has(t)}">
+      <h3>${name}</h3><p>${desc}</p><div class="meter"><i style="width:${c?m/c*100:0}%"></i></div>
+      <span class="mono">${m} of ${c} mastered · ${WR[t].length} written</span></button>`}).join("")}</div></div>
+    <div class="opt-group"><span class="label">Format</span>${seg("mode",[["mc","Multiple choice"],["wr","Write it out"]])}
+      <span class="note">${cfg.mode==="mc"?"Four options, with the explanation and clause shown after each answer.":"You draft an answer, compare it with a model answer and mark yourself. This is the closest practice for writing."}</span></div>
+    <div class="row" style="gap:20px">
+      <div class="opt-group"><span class="label">Questions</span>${seg("len",[[10,"10"],[20,"20"],["all","All"]])}</div>
+      <div class="opt-group"><span class="label">Include</span>${seg("focus",[["all","Everything"],["weak","New and missed"]])}</div>
+    </div>
+    <div class="row between">
+      <button type="button" class="btn" id="start" ${take?"":"disabled"}>${take?`Start ${take} question${take>1?"s":""}`:"Nothing left to drill here"}</button>
+      ${Object.keys(prog).length?(confirmReset?`<span class="row"><span class="note">Clear all saved results?</span><button type="button" class="link" id="resetYes">Yes, clear</button><button type="button" class="link" id="resetNo">Keep</button></span>`:`<button type="button" class="link" id="reset">Reset progress</button>`):""}
+    </div></section>`;
+}
+
+function start(){
+  const p=shuffle(pool()), take=cfg.len==="all"?p.length:Math.min(cfg.len,p.length);
+  S={mode:cfg.mode,items:p.slice(0,take),i:0,res:[],answered:false};
+  S.items.forEach(it=>{if(S.mode==="mc")it.opts=shuffle(it.q[2].map((text,k)=>({text,ok:k===0})))});
+  question();
+}
+const runStrip=()=>`<div class="run" aria-hidden="true">${S.items.map((_,k)=>`<i class="${k<S.res.length?(S.res[k]?"ok":"no"):k===S.i?"now":""}"></i>`).join("")}</div>`;
+const tname=t=>TOPICS.find(x=>x[0]===t)[1];
+
+function question(){
+  const it=S.items[S.i]; S.answered=false;
+  const head=`<div class="row between"><span class="label">${tname(it.t)}</span><span class="mono">${S.i+1} / ${S.items.length}</span></div>${runStrip()}`;
+  if(S.mode==="mc"){
+    app.innerHTML=`<section class="panel">${head}<h2 class="q">${esc(it.q[1])}</h2>
+      <div class="choices">${it.opts.map((o,k)=>`<button type="button" class="choice" data-k="${k}"><span class="k">${k+1}</span><span>${esc(o.text)}</span></button>`).join("")}</div>
+      <div id="fb"></div><div class="row between"><button type="button" class="link" id="quit">End session</button><span class="note">Keys 1 to 4 answer, Enter continues</span></div></section>`;
+  }else{
+    app.innerHTML=`<section class="panel">${head}<h2 class="q">${esc(it.q[1])}</h2>
+      <textarea id="draft" placeholder="Write your answer as you would in a report or procedure."></textarea>
+      <div class="row between"><span class="mono" id="wc">0 words</span><button type="button" class="btn" id="reveal">Compare with model answer</button></div>
+      <div id="fb"></div><button type="button" class="link" id="quit">End session</button></section>`;
+    document.getElementById("draft").focus();
+  }
+}
+function answer(k){
+  if(S.answered||S.mode!=="mc")return; S.answered=true;
+  const it=S.items[S.i], ok=it.opts[k].ok;
+  S.res.push(ok); prog[it.id]=ok?1:0; save(); header();
+  app.querySelectorAll(".choice").forEach((b,j)=>{b.disabled=true;if(it.opts[j].ok)b.classList.add("right");else if(j===k)b.classList.add("wrong")});
+  app.querySelector(".run").outerHTML=runStrip();
+  document.getElementById("fb").innerHTML=`<div class="fb"><span class="verdict ${ok?"ok":"no"}">${ok?"Correct":"Not quite"}</span><p>${esc(it.q[3])}</p><span class="ref">Source: ${esc(it.q[0])}</span>
+    <div><button type="button" class="btn" id="next">${S.i+1<S.items.length?"Next question":"See results"}</button></div></div>`;
+  document.getElementById("next").focus();
+}
+function reveal(){
+  if(S.answered)return; S.answered=true;
+  const it=S.items[S.i];
+  document.getElementById("reveal").hidden=true;
+  document.getElementById("fb").innerHTML=`<div class="fb"><div class="model"><span class="label">Model answer</span><p>${esc(it.q[2])}</p>
+    <span class="label">A full answer includes</span><ul>${it.q[3].map(p=>`<li>${esc(p)}</li>`).join("")}</ul><span class="ref">Source: ${esc(it.q[0])}</span></div>
+    <div class="row"><span class="note">Mark your draft:</span><button type="button" class="btn" data-grade="1">Covered every point</button><button type="button" class="btn ghost" data-grade="0">Missed something</button></div></div>`;
+}
+function grade(ok){
+  const it=S.items[S.i]; S.res.push(ok); prog[it.id]=ok?1:0; save(); next();
+}
+function next(){ S.i++; S.i<S.items.length?question():results(); }
+
+function results(){
+  header();
+  const n=S.res.length, c=S.res.filter(Boolean).length;
+  if(!n){setup();return}
+  const by={}; S.items.slice(0,n).forEach((it,k)=>{(by[it.t]=by[it.t]||[0,0])[1]++; if(S.res[k])by[it.t][0]++});
+  const missed=S.items.slice(0,n).filter((_,k)=>!S.res[k]);
+  const pct=Math.round(c/n*100);
+  app.innerHTML=`<section class="panel">
+    <div class="row between"><div><span class="label">Session result</span><div class="score">${c} / ${n}</div></div><span class="mono">${pct}%</span></div>
+    ${runStrip()}
+    <table><thead><tr><th>Deck</th><th class="n">Correct</th><th class="n">Asked</th></tr></thead><tbody>
+    ${Object.entries(by).map(([t,[a,b]])=>`<tr><td>${tname(t)}</td><td class="n">${a}</td><td class="n">${b}</td></tr>`).join("")}</tbody></table>
+    ${missed.length?`<div class="missed"><span class="label">Review these</span>${missed.map(it=>`<article><h3>${esc(it.q[1])}</h3><p>${esc(S.mode==="mc"?it.q[2][0]+" "+it.q[3]:it.q[2])}</p><span class="ref">${esc(it.q[0])}</span></article>`).join("")}</div>`:`<p>Every answer was right. Try the written format or another deck next.</p>`}
+    <div class="row"><button type="button" class="btn" id="again">New session</button>${missed.length?`<button type="button" class="btn ghost" id="retry">Retry the ${missed.length} missed</button>`:""}</div></section>`;
+  S.missed=missed;
+}
+
+app.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  if(b.dataset.topic){const t=b.dataset.topic;cfg.topics.has(t)?cfg.topics.delete(t):cfg.topics.add(t);return setup()}
+  if(b.dataset.set){const v=b.dataset.v;cfg[b.dataset.set]=/^\d+$/.test(v)?+v:v;return setup()}
+  if(b.dataset.k)return answer(+b.dataset.k);
+  if(b.dataset.grade)return grade(b.dataset.grade==="1");
+  switch(b.id){
+    case "start":return start();
+    case "reset":confirmReset=true;return setup();
+    case "resetNo":confirmReset=false;return setup();
+    case "resetYes":prog={};save();confirmReset=false;return setup();
+    case "next":return next();
+    case "reveal":return reveal();
+    case "quit":S.items=S.items.slice(0,Math.max(S.res.length,0));return results();
+    case "again":return setup();
+    case "retry":{const m=S.missed;S={mode:S.mode,items:m.map(it=>({...it,opts:it.opts&&shuffle(it.opts)})),i:0,res:[],answered:false};return question()}
+  }
+});
+app.addEventListener("input",e=>{
+  if(e.target.id==="draft"){const w=e.target.value.trim().split(/\s+/).filter(Boolean).length;document.getElementById("wc").textContent=w+" word"+(w===1?"":"s")}
+});
+document.addEventListener("keydown",e=>{
+  if(!S||S.mode!=="mc"||e.target.tagName==="TEXTAREA")return;
+  if(!S.answered&&/^[1-4]$/.test(e.key))answer(+e.key-1);
+});
+setup();
+</script>
+</body>
+</html>
