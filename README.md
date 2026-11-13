@@ -1,6 +1,6 @@
 # Quality Standards Drill
 
-A single-page quiz for learning ISO 9001, IATF 16949 and measurement systems analysis (MSA), with a fourth deck on writing to those standards.
+A single-page quiz for learning quality management system (QMS) fundamentals, ISO 9001, IATF 16949 and measurement systems analysis (MSA), with a deck on writing to those standards and two reference appendices.
 
 ## Open the app
 
@@ -21,10 +21,18 @@ To put it on a phone's home screen, open the address in the browser and choose *
 
 | Deck | Multiple choice | Written prompts | Covers |
 | --- | --- | --- | --- |
-| ISO 9001 | 20 | 3 | Clause structure, terminology and core requirements of the 2015 edition |
+| QMS fundamentals | 17 | 3 | Vocabulary, audit types, certification, 8D, cost of quality, the process approach |
+| ISO 9001 | 26 | 3 | Clause structure, terminology and core requirements of the 2015 edition, plus six questions on what changed in 2026 |
 | IATF 16949 | 22 | 3 | Automotive supplements, core tools, audit rules, PPAP |
 | MSA | 20 | 3 | Gauge R&R, bias, linearity, stability, attribute studies, worked calculations |
 | Writing to the standard | 15 | 2 | Requirement verbs, nonconformity statements, citations, reporting results |
+
+### Appendices
+
+These are reading pages, not quizzes. Open them from the **Reference** row on the setup screen, or directly:
+
+- **Appendix A: SPC tools in simple terms** (`#spc`): common and special cause, how to read a control chart, which chart fits which data, Cp, Cpk, Pp and Ppk, and the seven basic quality tools.
+- **Appendix B: ISO 9001:2026** (`#iso2026`): what changed from the 2015 edition, clause by clause, with the transition dates.
 
 ## How to use it
 
@@ -65,18 +73,20 @@ Progress is stored in your browser's local storage, on that device only. Nothing
 
 Questions are written against:
 
-- ISO 9001:2015
+- ISO 9001:2015, and published summaries of ISO 9001:2026
 - IATF 16949:2016
 - AIAG Measurement Systems Analysis reference manual, 4th edition
-- AIAG PPAP manual, 4th edition, and ISO 9000:2015 for definitions
+- AIAG PPAP manual, 4th edition, AIAG SPC manual, 2nd edition, and ISO 9000:2015 for definitions
 
 The questions and clause references were written from working knowledge of these documents, not transcribed from them, and no standard text is reproduced. Before quoting a clause number in formal work, check it against your own copy of the standard, the edition your organisation is certified to, and current IATF Sanctioned Interpretations.
 
+ISO 9001:2026 was published on 16 September 2026. The 2026 questions and Appendix B are based on certification-body and consultancy summaries of the new edition, not on its text, and those summaries disagree on some details. Each of these questions is marked "(as reported)" in its source line. Confirm them against the standard itself.
+
 ## Editing the questions
 
-Everything lives in `index.html`. Near the top of the `<script>` block:
+Everything lives in `index.html`. The icon is `icon.svg`, with PNG copies (`icon-192.png`, `apple-touch-icon.png`) for home screens. Near the top of the `<script>` block:
 
-- `MC` holds the multiple-choice questions, grouped by deck (`iso`, `iatf`, `msa`, `write`). Each entry is:
+- `MC` holds the multiple-choice questions, grouped by deck (`qms`, `iso`, `iatf`, `msa`, `write`). Each entry is:
 
   ```js
   ["Source clause", "Question text", ["Correct answer", "Wrong", "Wrong", "Wrong"], "Explanation"]

@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Quiz and written-answer practice for ISO 9001, IATF 16949 and measurement systems analysis.">
+<meta name="description" content="Quiz and written-answer practice for QMS fundamentals, ISO 9001, IATF 16949 and measurement systems analysis, with an SPC appendix.">
+<meta name="theme-color" content="#0d5a86">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Quality Standards Drill</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -43,6 +47,27 @@ p{margin:0}
 .tb .v{font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums}
 @media (max-width:480px){.tb{grid-template-columns:1fr 1fr}.tb>div:first-child{grid-column:1/-1;border-bottom:1.5px solid var(--ink)}.tb>div:nth-child(2){border-left:0}}
 
+.tb>.brand{flex-direction:row;align-items:center;gap:12px}
+.brand svg{width:42px;height:42px;flex:none}
+.brand>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.deck:last-child:nth-child(odd){grid-column:1/-1}
+.appx{display:flex;flex-direction:column;gap:4px;border:1px dashed var(--accent);padding:12px;color:var(--ink);text-decoration:none}
+.appx:hover{background:var(--accent-soft)}
+.appx h3{color:var(--accent);font-size:1.15rem;font-weight:600}
+.appx p{font-size:.85rem;color:var(--muted)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.doc{gap:20px}
+.doc h2{font-size:1.6rem;font-weight:700}
+.doc h3{font-size:1.25rem;font-weight:600}
+.doc section{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+.doc dl{margin:0;display:flex;flex-direction:column;gap:12px}
+.doc dt{font-weight:600}
+.doc dd{margin:0}
+.doc ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.doc a{color:var(--accent)}
+.scroll{overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:560px;height:auto}
+.formula{font-family:var(--mono);font-size:.85rem;background:var(--bg);padding:8px 12px;overflow-x:auto;white-space:nowrap}
 .panel{background:var(--panel);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:16px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .between{justify-content:space-between}
@@ -107,17 +132,176 @@ td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-
 <body>
 <div class="wrap">
   <header class="tb">
-    <div><span class="label">Title</span><h1>Quality Standards Drill</h1></div>
-    <div><span class="label">Scope</span><span class="v">9001 · 16949 · MSA</span></div>
+    <div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1688c6"/><stop offset="1" stop-color="#07263d"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#lg)"/><path d="M8 19H56M8 47H56" fill="none" stroke="#a9dcf5" stroke-width="1.5" stroke-dasharray="3 3" opacity=".75"/><polyline points="9,37 18,29 26,39 34,26 42,35 52,13" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="13" r="8.5" fill="#ffb224" opacity=".3"/><circle cx="52" cy="13" r="4.6" fill="#ffb224"/></svg><span><span class="label">Title</span><h1>Quality Standards Drill</h1></span></div>
+    <div><span class="label">Scope</span><span class="v">QMS · 9001 · 16949 · MSA</span></div>
     <div><span class="label">Mastered</span><span class="v" id="tbMastered">0 / 0</span></div>
   </header>
   <main id="app"></main>
-  <p class="note">Questions follow ISO 9001:2015, IATF 16949:2016 and the AIAG MSA reference manual, 4th edition. Clause numbers are for looking up the source text. Check them against the edition your organisation works to, and against current IATF Sanctioned Interpretations.</p>
+  <article id="spc" class="panel doc" hidden>
+    <div class="row between"><span class="label">Appendix A</span><a href="#drill">Back to the drill</a></div>
+    <h2>SPC tools in simple terms</h2>
+    <p>Statistical process control (SPC) means watching a process with data so you can tell normal wobble from a real change, and act only on the real change. This appendix follows the AIAG SPC reference manual, 2nd edition, in plain language.</p>
+
+    <section>
+      <h3>Two ideas to learn first</h3>
+      <dl>
+        <dt>Common cause and special cause</dt>
+        <dd>Every process varies a little, the way your commute takes 28 to 34 minutes on a normal day. That is common-cause variation: many small, ordinary influences. A special cause is the day a road is closed and the trip takes an hour. Something specific changed, and you can go and find it.</dd>
+        <dt>Control limits and specification limits</dt>
+        <dd>Control limits are calculated from the process’s own data. They show what the process normally does. Specification limits come from the drawing. They show what the customer will accept. A process can be in control and still make bad parts, or be out of control while every part is still in specification. Never draw specification limits on a control chart and call them control limits.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h3>The control chart</h3>
+      <p>A control chart is a run of measurements plotted in time order, with three lines: a centre line at the average, and an upper and lower control limit (UCL and LCL) about three standard deviations either side. Points that bounce around inside the limits with no pattern mean the process is stable. Leave it alone.</p>
+      <div class="scroll fig"><svg viewBox="-90 0 730 220" role="img" aria-label="Control chart with fourteen points. Thirteen fall between the control limits and one falls above the upper control limit, marked as a special cause.">
+        <g fill="none" stroke="var(--muted)" stroke-width="1.2"><path d="M40 40H620M40 180H620" stroke-dasharray="6 5"/><path d="M40 110H620"/></g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono,monospace" font-size="12"><text x="-86" y="44">UCL</text><text x="-86" y="114">Centre line</text><text x="-86" y="184">LCL</text></g>
+        <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="70,120 110,95 150,130 190,105 230,90 270,118 310,100 350,135 390,112 430,22 470,108 510,125 550,98 590,115"/>
+        <g fill="var(--accent)"><circle cx="70" cy="120" r="4"/><circle cx="110" cy="95" r="4"/><circle cx="150" cy="130" r="4"/><circle cx="190" cy="105" r="4"/><circle cx="230" cy="90" r="4"/><circle cx="270" cy="118" r="4"/><circle cx="310" cy="100" r="4"/><circle cx="350" cy="135" r="4"/><circle cx="390" cy="112" r="4"/><circle cx="470" cy="108" r="4"/><circle cx="510" cy="125" r="4"/><circle cx="550" cy="98" r="4"/><circle cx="590" cy="115" r="4"/></g>
+        <circle cx="430" cy="22" r="6" fill="var(--bad)"/>
+        <text x="444" y="26" fill="var(--bad)" font-family="IBM Plex Sans,sans-serif" font-size="13" font-weight="600">Special cause: investigate</text>
+      </svg></div>
+      <p><strong>Signals that something changed:</strong></p>
+      <ul>
+        <li>A point outside a control limit.</li>
+        <li>A run of seven points in a row on one side of the centre line. Some rule sets use eight.</li>
+        <li>Seven points in a row all rising or all falling.</li>
+        <li>Any other pattern that is clearly not random, such as a repeating cycle or points hugging the centre line.</li>
+      </ul>
+      <p>When you see a signal, follow the reaction plan in the control plan: contain the parts, find what changed, and record what you did on the chart.</p>
+      <p><strong>Do not over-adjust.</strong> Tweaking a stable process after every reading, called tampering, adds variation. Adjust only on a signal.</p>
+    </section>
+
+    <section>
+      <h3>Which chart for which data</h3>
+      <p>Variable data is measured on a scale, such as a diameter in millimetres. Attribute data is counted, such as the number of rejects.</p>
+      <div class="scroll"><table>
+        <thead><tr><th>Chart</th><th>Use it when</th><th>In simple terms</th></tr></thead>
+        <tbody>
+          <tr><td>X̄ and R</td><td>Measured data in small subgroups, usually 2 to 8 parts</td><td>One chart tracks the average of each subgroup, the other tracks the spread within it</td></tr>
+          <tr><td>X̄ and s</td><td>Measured data in larger subgroups, about 9 or more</td><td>The same, with standard deviation in place of range</td></tr>
+          <tr><td>I-MR</td><td>One measurement at a time, such as one batch per shift</td><td>Each reading, plus how much it moved from the last one</td></tr>
+          <tr><td>p</td><td>Proportion of defective parts, sample size may vary</td><td>What fraction of the sample was rejected</td></tr>
+          <tr><td>np</td><td>Number of defective parts, sample size constant</td><td>How many of the sample were rejected</td></tr>
+          <tr><td>c</td><td>Number of defects, inspection area constant</td><td>How many flaws were found in each unit</td></tr>
+          <tr><td>u</td><td>Defects per unit, inspection area may vary</td><td>Flaws per unit when the amount inspected changes</td></tr>
+        </tbody>
+      </table></div>
+      <p>A defective is a part that is rejected. A defect is a single flaw. One defective part can carry several defects.</p>
+    </section>
+
+    <section>
+      <h3>Process capability</h3>
+      <p>Capability compares what the process does with what the drawing allows. Think of parking a car in a garage. The tolerance is the width of the garage. The process spread is the width of the car.</p>
+      <dl>
+        <dt>Cp: does the car fit?</dt>
+        <dd>Cp compares the tolerance width with the process spread and ignores where the process is centred.<div class="formula">Cp = (USL − LSL) ÷ 6σ</div></dd>
+        <dt>Cpk: is it parked in the middle?</dt>
+        <dd>Cpk measures the distance from the process average to the nearer specification limit. If the process is off-centre, Cpk is lower than Cp.<div class="formula">Cpk = the smaller of (USL − mean) ÷ 3σ and (mean − LSL) ÷ 3σ</div></dd>
+        <dt>Pp and Ppk: the same, over the long run</dt>
+        <dd>Cp and Cpk use the variation within subgroups, so they describe what the process can do when it is stable. Pp and Ppk use all the variation in the data, so they describe what the process actually did over the whole period, drifts included.</dd>
+      </dl>
+      <p>Common targets: 1.33 or higher for an ongoing process. For an initial process study under AIAG PPAP, above 1.67 meets the criteria, 1.33 to 1.67 may be acceptable, and below 1.33 does not. Customer-specific requirements override these figures. A capability index means little unless the process is in control and the measurement system has passed its MSA.</p>
+    </section>
+
+    <section>
+      <h3>The seven basic quality tools</h3>
+      <dl>
+        <dt>Check sheet</dt><dd>A tally form. You make a mark each time something happens, so the data sorts itself as you collect it.</dd>
+        <dt>Histogram</dt><dd>A bar chart of how often each value occurs. It shows the shape of the data: where the centre is, how wide it spreads, and whether it leans to one side.</dd>
+        <dt>Pareto chart</dt><dd>Bars sorted from largest to smallest, with a cumulative line. It shows the few causes that account for most of the problem, so you know where to start.</dd>
+        <dt>Cause-and-effect diagram</dt><dd>Also called a fishbone or Ishikawa diagram. The problem sits at the head and possible causes branch off under headings such as man, machine, material, method, measurement and environment. It organises ideas. It does not prove a cause.</dd>
+        <dt>Scatter diagram</dt><dd>Dots plotting one variable against another, such as oven temperature against hardness. A sloping cloud suggests the two are related. It does not prove that one causes the other.</dd>
+        <dt>Flowchart</dt><dd>A map of the process steps in order. Some lists put stratification here: splitting data by shift, machine or supplier to see whether the groups differ.</dd>
+        <dt>Control chart</dt><dd>The time-ordered chart with limits described above. It is the only one of the seven that tells you when the process changed.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h3>How to write about SPC</h3>
+      <ul>
+        <li>Say “in statistical control” or “stable”, not “good”. Control says nothing about meeting the specification.</li>
+        <li>Say “capable” only with an index, the sample size and the period it covers.</li>
+        <li>Name the chart type and subgroup size: “X̄ and R chart, subgroups of 5, one per hour”.</li>
+        <li>Keep “defect” and “defective” distinct.</li>
+      </ul>
+      <p><a href="#drill">Back to the drill</a></p>
+    </section>
+  </article>
+  <article id="iso2026" class="panel doc" hidden>
+    <div class="row between"><span class="label">Appendix B</span><a href="#drill">Back to the drill</a></div>
+    <h2>ISO 9001:2026: what changed</h2>
+    <p>ISO 9001:2026 is the sixth edition. It was published on 16 September 2026 and replaces ISO 9001:2015. This summary is drawn from certification-body and consultancy summaries published since then, not from the standard’s own text. Check clause numbers and wording against your copy before you cite them.</p>
+    <section>
+      <h3>The short version</h3>
+      <p>The ten-clause structure, the process approach, PDCA and risk-based thinking all stay. The changes are limited: a few requirements are added or made explicit, and more explanation moves into the guidance annex. Most of what the 2015 questions in this drill teach still applies.</p>
+    </section>
+    <section>
+      <h3>Changes by clause</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Clause</th><th>What changed</th><th>In simple terms</th></tr></thead>
+        <tbody>
+          <tr><td>3</td><td>Core terms now appear in the standard</td><td>Fewer trips to ISO 9000 for basic definitions</td></tr>
+          <tr><td>4.1, 4.2</td><td>Climate change wording from the 2024 amendment is built in</td><td>Decide whether climate change is a relevant issue for the QMS, and whether interested parties have related requirements</td></tr>
+          <tr><td>5.1</td><td>Top management must promote quality culture and ethical behaviour</td><td>Leaders are expected to show it in practice, not only sign a policy</td></tr>
+          <tr><td>5.2</td><td>Quality policy tied more closely to strategic direction</td><td>The policy should fit where the organisation is heading</td></tr>
+          <tr><td>6.1</td><td>Split into 6.1.1 determining risks and opportunities, 6.1.2 actions for risks, 6.1.3 actions for opportunities</td><td>Opportunities get their own treatment and are no longer an afterthought to risk</td></tr>
+          <tr><td>6.3</td><td>Planning of changes is strengthened</td><td>Reported additions include communicating a change and checking afterwards that it worked</td></tr>
+          <tr><td>7.3</td><td>Awareness now covers quality culture and ethical behaviour</td><td>Everyone working under the organisation’s control should know what these mean for their work</td></tr>
+          <tr><td>Annexes</td><td>Annex A guidance is expanded; the 2015 Annex B is removed</td><td>More explanation of intent sits next to the requirements</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <section>
+      <h3>Transition dates</h3>
+      <ul>
+        <li>Published: 16 September 2026.</li>
+        <li>Reported cut-off for new certificates to the 2015 edition: 31 March 2028.</li>
+        <li>ISO 9001:2015 certificates stop being valid: 30 September 2029, three years after publication.</li>
+      </ul>
+      <p>Confirm the dates with your certification body.</p>
+    </section>
+    <section>
+      <h3>What it means for IATF 16949</h3>
+      <p>IATF 16949:2016 is written as a supplement to ISO 9001:2015. Until the IATF publishes its own position or a revised standard, automotive sites continue to work to the edition IATF 16949 refers to. Watch IATF communications before changing clause references in automotive documents.</p>
+    </section>
+    <section>
+      <h3>How to write about it</h3>
+      <ul>
+        <li>Always give the edition year. “ISO 9001, 6.1.2” means different things in 2015 and 2026.</li>
+        <li>During the transition, state which edition a procedure, audit report or certificate refers to.</li>
+        <li>When you update a document for 2026, record it as a revision with the reason for change.</li>
+      </ul>
+      <p><a href="#drill">Back to the drill</a></p>
+    </section>
+  </article>
+  <p class="note">Questions follow ISO 9001:2015 unless a source line says 2026, IATF 16949:2016 and the AIAG MSA reference manual, 4th edition. The QMS deck uses ISO 9000:2015 vocabulary and common audit practice. Clause numbers are for looking up the source text. Check them against the edition your organisation works to, and against current IATF Sanctioned Interpretations. ISO 9001:2026 items come from published summaries of the new edition, not from its text.</p>
 </div>
 
 <script>
 // Each item: [clause/ref, question, [correct, wrong, wrong, wrong], explanation]. Append only, ids depend on position.
 const MC = {
+qms: [
+["ISO 9000:2015, 3.5","What is a quality management system?",["The set of interrelated policies, objectives and processes an organisation uses to direct and control itself with regard to quality","The department that inspects finished product","The collection of certificates an organisation holds","The software used to store controlled documents"],"A QMS is part of the whole management system. It covers how quality policy and objectives are set and the processes used to achieve them, not only inspection or paperwork."],
+["ISO 9000:2015, 3.3","What is the difference between quality assurance and quality control?",["Quality assurance provides confidence that requirements will be fulfilled; quality control is the activity of fulfilling and checking them","Quality assurance is done by operators; quality control by managers","Quality assurance applies to services; quality control to products","They are two names for final inspection"],"QA looks forward and is about the system: planning, procedures, audits. QC is operational: inspection, testing and reacting to results."],
+["Common QMS practice","In the usual documentation hierarchy, which level tells a person how to carry out one specific task?",["Work instruction","Quality policy","Procedure","Record"],"From top to bottom: policy and manual (why), procedures (who does what, when), work instructions (how, step by step), then forms and records (evidence it was done)."],
+["ISO 19011:2018, 3.1","A customer sends its own staff to audit a supplier’s plant. What type of audit is this?",["Second-party audit","First-party audit","Third-party audit","Surveillance audit"],"First-party is an internal audit. Second-party is done by a party with an interest in the organisation, such as a customer. Third-party is done by an independent body, such as a certification body."],
+["ISO/IEC 17021-1","In an initial certification audit, what is Stage 1 for?",["Reviewing documented information and readiness, and planning Stage 2","Auditing every process for effectiveness","Closing nonconformities from the previous cycle","Auditing the organisation’s suppliers"],"Stage 1 checks that the system is designed and ready. Stage 2 evaluates implementation and effectiveness. The certificate then runs on a three-year cycle with surveillance audits and a recertification audit."],
+["ISO/IEC 17021-1, 3.12 and 3.13","What makes a nonconformity major and not minor?",["It affects the capability of the management system to achieve its intended results","It was found in the production area","It involves more than one document","It was raised by the lead auditor"],"Typical majors are a required process that is absent or has broken down, or a situation likely to result in shipping nonconforming product. A number of related minors can also add up to a major."],
+["Process approach / IATF auditor guidance","A turtle diagram is used to describe a process. Which set does it capture?",["Inputs, outputs, resources, people and competence, methods, and performance measures","Strengths, weaknesses, opportunities and threats","Severity, occurrence and detection","Plan, do, check and act"],"The turtle puts the process in the body, inputs and outputs at head and tail, and the four legs are with what, with whom, how, and how measured. Auditors use it to plan process audits."],
+["Cost of quality (Feigenbaum / ASQ)","In the cost of quality model, a warranty claim is which type of cost?",["External failure","Internal failure","Appraisal","Prevention"],"Prevention is spent to stop defects, such as training and FMEA. Appraisal is spent to find them, such as inspection. Internal failure is found before shipping, such as scrap. External failure is found by the customer."],
+["8D problem solving","In the 8D method, what happens at D3?",["Interim containment action to protect the customer","Root cause analysis","Verification of permanent corrective action","Recognition of the team"],"D1 team, D2 problem description, D3 interim containment, D4 root cause, D5 choose corrective action, D6 implement and validate, D7 prevent recurrence, D8 close and recognise the team."],
+["ISO 9000:2015, 3.7","What is the difference between effectiveness and efficiency?",["Effectiveness is whether planned results were achieved; efficiency is the result achieved relative to the resources used","Effectiveness is about cost; efficiency is about quality","Effectiveness applies to people; efficiency to machines","They mean the same in ISO terms"],"ISO 9001 audits effectiveness. IATF 16949 also asks for efficiency in places, such as manufacturing process audits and management review."],
+["ISO 9000:2015, 3.8","What is the difference between verification and validation?",["Verification confirms specified requirements were met; validation confirms the result works for its intended use","Verification is done by the customer; validation by the supplier","Verification applies to software; validation to hardware","Verification comes after validation"],"Verification asks “did we build it right?” against the specification. Validation asks “did we build the right thing?” against the intended use."],
+["ISO 9000:2015, 3.12","What is a concession?",["Permission to use or release a product that does not conform to specified requirements","Permission to depart from requirements before the product is made","An agreement to reduce the price of nonconforming product","A decision to scrap nonconforming product"],"A concession applies to product that already exists, usually for a limited quantity or time. Permission given before production is a deviation permit."],
+["ISO 9000:2015, 3.9","No customer complaints were received this year. What does that show about customer satisfaction?",["Not much; absence of complaints does not necessarily mean satisfaction is high","That satisfaction is high","That the complaint process is effective","That the satisfaction survey can be skipped"],"Satisfaction is the customer’s perception of how far expectations were met. ISO 9000 notes that complaints are a common sign of low satisfaction but their absence does not imply high satisfaction."],
+["ISO Directives, Annex SL","Why do ISO 9001, ISO 14001 and ISO 45001 share the same ten-clause layout?",["They follow the harmonized structure for management system standards, which makes integration easier","They were written by the same committee","Certification bodies require identical clause numbers","The later standards copied ISO 9001 by convention"],"The common structure and core text come from Annex SL of the ISO Directives. It lets an organisation run one integrated management system."],
+["ISO 9000:2015, 3.3","What does continual improvement mean in a QMS?",["Recurring activity to enhance performance","Uninterrupted improvement with no pauses","Fixing each nonconformity as it is found","Raising the quality objectives every year"],"“Continual” means recurring, in steps, and is the term the standard uses. “Continuous” would mean without interruption."],
+["ISO 9001:2015, 7.5.3.2","A procedure is revised. What must happen to the old version?",["It is prevented from unintended use, and identified if kept for any purpose","It is destroyed within 30 days","It is sent to the certification body","It stays in use until stock of the printed copies runs out"],"Control of documented information covers distribution, access, storage, change control such as version numbers, and retention and disposition."],
+["Root cause analysis practice","Which statement about the 5 Whys is correct?",["It asks why repeatedly until a cause is reached that, once fixed, prevents recurrence","It must always stop at exactly five questions","It is finished when a person is identified as the cause","It replaces the need for evidence"],"Five is a guide. Each answer should be checked against evidence, and “operator error” is a symptom to ask why about, not a root cause."]
+],
 iso: [
 ["ISO 9001:2015, 7.5","ISO 9001:2015 says to “maintain” some documented information and “retain” other documented information. What is the difference?",["Maintain applies to documents that are kept current; retain applies to records kept as evidence","Maintain applies to electronic files; retain applies to paper files","Maintain is a recommendation; retain is a requirement","There is no difference; the terms are interchangeable"],"“Maintain” signals what older editions called documents or procedures. “Retain” signals records: evidence of results achieved. Writers use this cue to decide whether a clause calls for a procedure or a record."],
 ["ISO 9001:2015, 0.1","In ISO 9001, which verb indicates a requirement?",["shall","should","may","can"],"“Shall” is a requirement, “should” a recommendation, “may” a permission, and “can” a possibility or capability."],
@@ -138,7 +322,13 @@ iso: [
 ["ISO 9001:2015, 9.2","What does clause 9.2 require of internal audits?",["They are conducted at planned intervals, with auditors selected to ensure objectivity and impartiality","They are conducted monthly by the quality manager","They are conducted by an accredited third party","They cover only the production processes"],"The programme must consider the importance of the processes, changes affecting the organisation and the results of previous audits."],
 ["ISO 9001:2015, 7.2 and 7.3","What is the difference between competence (7.2) and awareness (7.3)?",["Competence is the ability to do the work; awareness is knowing the policy, objectives and the effect of one’s own contribution","Competence applies to managers; awareness applies to operators","Competence is recorded; awareness is audited","They are two names for the training requirement"],"Competence is based on education, training or experience, with evidence retained. Awareness covers the policy, relevant objectives, each person’s contribution and the implications of not conforming."],
 ["ISO 9001:2015, 8.5.2","When traceability is a requirement, the organisation must:",["Control the unique identification of outputs and retain the documented information needed","Serialise every component","Photograph each shipment","Keep samples of each lot for ten years"],"Clause 8.5.2 also requires identifying the status of outputs with respect to monitoring and measurement requirements."],
-["ISO 9001:2015, clauses 4 to 10","Which clauses contain the auditable requirements?",["Clauses 4 to 10","Clauses 1 to 10","Clauses 0 to 3","Clauses 5 to 8 only"],"Clauses 1 to 3 are scope, normative references, and terms and definitions. Requirements begin at clause 4."]
+["ISO 9001:2015, clauses 4 to 10","Which clauses contain the auditable requirements?",["Clauses 4 to 10","Clauses 1 to 10","Clauses 0 to 3","Clauses 5 to 8 only"],"Clauses 1 to 3 are scope, normative references, and terms and definitions. Requirements begin at clause 4."],
+["ISO 9001:2026 (as reported)","Which edition of ISO 9001 replaced ISO 9001:2015, and when?",["ISO 9001:2026, the sixth edition, published in September 2026","ISO 9001:2024, published with the climate change amendment","ISO 9001:2025, the fifth edition","None yet; the 2015 edition is still current"],"The 2024 document was an amendment to the 2015 edition on climate change, not a new edition. The 2026 edition was published on 16 September 2026."],
+["ISO 9001:2026, 5.1 (as reported)","What did ISO 9001:2026 add to the leadership requirements?",["Top management must promote quality culture and ethical behaviour","Top management must appoint a management representative","Top management must approve every corrective action","Top management must hold a quality qualification"],"The matching awareness requirement in 7.3 extends the same themes to everyone working under the organisation’s control."],
+["ISO 9001:2026, 6.1 (as reported)","How did clause 6.1 change in ISO 9001:2026?",["It was split so that actions for risks and actions for opportunities are separate subclauses","It was deleted and replaced by a preventive action clause","It now requires a formal FMEA for every process","It moved to clause 10"],"Reported structure: 6.1.1 determining risks and opportunities, 6.1.2 actions to address risks, 6.1.3 actions to address opportunities. Risk-based thinking itself is unchanged."],
+["ISO 9001:2026, 4.1 and 4.2 (as reported)","What does ISO 9001:2026 say about climate change?",["The organisation determines whether climate change is a relevant issue, and whether interested parties have related requirements","Every organisation must set carbon reduction targets","Certification to ISO 14001 is now required","Climate change is excluded from the scope of a QMS"],"This wording came from the 2024 amendment to the 2015 edition and is built into the 2026 text. The answer can be “not relevant”, but the question has to be considered."],
+["ISO 9001:2026 transition (as reported)","Until when do certificates to ISO 9001:2015 remain valid?",["30 September 2029, three years after the 2026 edition was published","31 December 2026","Until each certificate’s own expiry date, with no cut-off","16 September 2027"],"The transition period is three years. New certificates to the 2015 edition are reported to stop earlier, at the end of March 2028. Confirm dates with your certification body."],
+["ISO 9001:2026 (as reported)","Which statement best describes the scale of change in ISO 9001:2026?",["The ten-clause structure and core concepts stay, with limited additions and more guidance","The standard was restructured into twelve clauses","Risk-based thinking and the process approach were removed","Documented procedures became mandatory for every clause"],"The process approach, PDCA and risk-based thinking all remain. The main additions are in leadership, awareness, planning for risks and opportunities, and planning of changes."]
 ],
 iatf: [
 ["IATF 16949:2016, Foreword and 1.1","How does IATF 16949 relate to ISO 9001?",["It is a supplement used together with ISO 9001:2015, not a stand-alone standard","It replaces ISO 9001 for automotive suppliers","It is an annex inside ISO 9001","It is a guidance document with no requirements"],"IATF 16949 does not reproduce the ISO 9001 text. A certified site has to meet ISO 9001:2015, IATF 16949:2016 and the applicable customer-specific requirements."],
@@ -206,6 +396,11 @@ write: [
 
 // Written prompts: [ref, prompt, model answer, key points]
 const WR = {
+qms:[
+["ISO 9000:2015, 3.3","Explain the difference between quality assurance and quality control, with one example of each.","Quality assurance is the part of quality management that gives confidence that requirements will be fulfilled. It works on the system, for example an internal audit programme or an approved procedure. Quality control is the part focused on fulfilling the requirements. It works on the product or process, for example measuring a diameter and rejecting parts outside tolerance.",["QA gives confidence and works on the system","QC fulfils and checks requirements on the product or process","One example of each"]],
+["Process approach","Describe the process approach and what a turtle diagram records about a process.","The process approach means managing the organisation as a set of linked processes, each turning inputs into outputs, so that results are consistent and predictable. A turtle diagram records one process on a page: its inputs and outputs, the equipment and resources it uses, the people and competence it needs, the methods and documents that govern it, and the measures that show whether it is performing.",["Linked processes turning inputs into outputs","Inputs and outputs","Resources and people","Methods","Performance measures"]],
+["8D problem solving","A customer reports a batch with a missing weld. In order, outline what an 8D report should cover.","Form a team. Describe the problem with facts: what, where, when and how many. Contain it by sorting stock at the customer, in transit and in house. Find and verify the root cause of both the defect and the failure to detect it. Choose and verify permanent corrective actions, then implement and validate them. Prevent recurrence by updating the PFMEA, control plan and similar processes. Close the report and recognise the team.",["Team and factual problem description","Containment before root cause","Root cause for occurrence and for non-detection","Corrective action verified and validated","Recurrence prevention: FMEA, control plan, similar processes"]]
+],
 iso:[
 ["ISO 9000:2015, 3.12","In two or three sentences, explain the difference between a correction and a corrective action. Give one example of each.","A correction eliminates a detected nonconformity, for example reworking or scrapping the affected parts. A corrective action eliminates the cause of the nonconformity so that it does not recur, for example changing the fixture design that allowed the part to be loaded backwards.",["Correction acts on the nonconformity itself","Corrective action acts on the cause, to prevent recurrence","One concrete example of each"]],
 ["ISO 9001:2015, 7.5","Explain to a new colleague what “documented information” means and how to tell whether a clause is asking for a document or a record.","Documented information is information the organisation has to control and maintain, in any format or media. Where the standard says to maintain it, the clause is asking for something kept current, such as a procedure. Where it says to retain it, the clause is asking for evidence of results, which is a record.",["Covers both documents and records, in any media","Maintain means kept current","Retain means kept as evidence"]],
@@ -227,7 +422,8 @@ write:[
 ]};
 
 const TOPICS = [
-  ["iso","ISO 9001","Structure, terms and core requirements of the 2015 edition"],
+  ["qms","QMS fundamentals","Vocabulary, audits, problem solving and how a quality system fits together"],
+  ["iso","ISO 9001","Structure, terms and core requirements of the 2015 edition, plus what changed in 2026"],
   ["iatf","IATF 16949","Automotive supplements, core tools and audit rules"],
   ["msa","MSA","Gauge R&R, bias, linearity, stability and attribute studies"],
   ["write","Writing to the standard","Requirement verbs, findings, citations and reporting results"]
@@ -240,7 +436,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const app=document.getElementById("app");
 
-const cfg={topics:new Set(["iso","iatf","msa","write"]),mode:"mc",len:10,focus:"all"};
+const cfg={topics:new Set(["qms","iso","iatf","msa","write"]),mode:"mc",len:10,focus:"all"};
 let S=null, confirmReset=false;
 
 const bank=mode=>mode==="mc"?MC:WR;
@@ -272,6 +468,10 @@ function setup(){
     <div class="decks">${TOPICS.map(([t,name,desc])=>{const[m,c]=stats(t);return `<button type="button" class="deck" data-topic="${t}" aria-pressed="${cfg.topics.has(t)}">
       <h3>${name}</h3><p>${desc}</p><div class="meter"><i style="width:${c?m/c*100:0}%"></i></div>
       <span class="mono">${m} of ${c} mastered · ${WR[t].length} written</span></button>`}).join("")}</div></div>
+    <div class="opt-group"><span class="label">Reference</span><div class="decks">
+      <a class="appx" href="#spc"><h3>Appendix A: SPC tools in simple terms</h3><p>Control charts, capability indices and the seven basic tools.</p></a>
+      <a class="appx" href="#iso2026"><h3>Appendix B: ISO 9001:2026</h3><p>What changed from the 2015 edition, and the transition dates.</p></a>
+    </div></div>
     <div class="opt-group"><span class="label">Format</span>${seg("mode",[["mc","Multiple choice"],["wr","Write it out"]])}
       <span class="note">${cfg.mode==="mc"?"Four options, with the explanation and clause shown after each answer.":"You draft an answer, compare it with a model answer and mark yourself. This is the closest practice for writing."}</span></div>
     <div class="row" style="gap:20px">
@@ -373,7 +573,10 @@ document.addEventListener("keydown",e=>{
   if(!S||S.mode!=="mc"||e.target.tagName==="TEXTAREA")return;
   if(!S.answered&&/^[1-4]$/.test(e.key))answer(+e.key-1);
 });
-setup();
+const docs=[...document.querySelectorAll("article.doc")];
+function route(){const h=location.hash.slice(1),a=docs.some(d=>d.id===h);docs.forEach(d=>d.hidden=d.id!==h);app.hidden=a;if(a)window.scrollTo(0,0)}
+addEventListener("hashchange",route);
+setup();route();
 </script>
 </body>
 </html>
